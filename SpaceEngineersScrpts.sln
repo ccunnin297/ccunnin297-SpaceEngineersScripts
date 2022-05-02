@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32002.261
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseScripts", "SpaceEngineersScrpts\BaseScripts.csproj", "{FD892AE5-1422-449A-B1CA-B0A8902FFBB0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BEC5E07A-0360-4E4A-B074-71D94F08E40B}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FD892AE5-1422-449A-B1CA-B0A8902FFBB0}.Debug|x64.ActiveCfg = Debug|x64
+		{FD892AE5-1422-449A-B1CA-B0A8902FFBB0}.Debug|x64.Build.0 = Debug|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6E8A7B37-5D3B-4CC3-9C96-33F76CA6A09F}
+	EndGlobalSection
+EndGlobal
