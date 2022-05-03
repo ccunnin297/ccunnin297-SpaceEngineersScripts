@@ -45,6 +45,7 @@ namespace IngameScript
             this.shipTool = new ShipTool(
                 log,
                 GridTerminalSystem.GetBlockWithName("Ship Tool Rotor") as IMyMotorAdvancedStator,
+                GridTerminalSystem.GetBlockWithName("Ship Tool Seat Rotor") as IMyMotorAdvancedStator,
                 GridTerminalSystem.GetBlockWithName("Ship Tool Grinder Hinge") as IMyMotorAdvancedStator,
                 GridTerminalSystem.GetBlockWithName("Ship Tool Welder Hinge") as IMyMotorAdvancedStator,
                 GridTerminalSystem.GetBlockWithName("Ship Tool Connector Hinge") as IMyMotorAdvancedStator
@@ -54,7 +55,7 @@ namespace IngameScript
                 shipTool
             };
 
-            Runtime.UpdateFrequency = UpdateFrequency.Update10;
+            Runtime.UpdateFrequency = UpdateFrequency.Update1;
         }
 
         public void Save()

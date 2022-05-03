@@ -29,16 +29,15 @@ namespace IngameScript
             float angle = (float)(rotor.Angle * (180.0f / Math.PI));
             angle = (angle > 360 ? angle - 360 : (angle < -360 ? angle + 360 : angle));
 
+            rotor.SetValue<float>("UpperLimit", targetAngle);
+            rotor.SetValue<float>("LowerLimit", targetAngle);
+
             if (targetAngle > angle)
             {
-                rotor.SetValue<float>("UpperLimit", targetAngle);
-                rotor.SetValue<float>("LowerLimit", angle);
                 rotor.SetValue<float>("Velocity", rotationVelocity);
             }
             else
             {
-                rotor.SetValue<float>("UpperLimit", angle);
-                rotor.SetValue<float>("LowerLimit", targetAngle);
                 rotor.SetValue<float>("Velocity", -rotationVelocity);
             }
         }

@@ -25,6 +25,7 @@ namespace IngameScript
         private Log log;
 
         private IMyMotorAdvancedStator shipToolRotor;
+        private IMyMotorAdvancedStator shipToolSeatRotor;
         private IMyMotorAdvancedStator shipToolGrinderHinge;
         private IMyMotorAdvancedStator shipToolWelderHinge;
         private IMyMotorAdvancedStator shipToolConnectorHinge;
@@ -32,6 +33,7 @@ namespace IngameScript
         public ShipTool(
             Log log,
             IMyMotorAdvancedStator shipToolRotor,
+            IMyMotorAdvancedStator shipToolSeatRotor,
             IMyMotorAdvancedStator shipToolGrinderHinge,
             IMyMotorAdvancedStator shipToolWelderHinge,
             IMyMotorAdvancedStator shipToolConnectorHinge
@@ -41,25 +43,36 @@ namespace IngameScript
 
             if (shipToolRotor == null)
             {
-                throw new Exception("ShipTool>shipToolRotor null");
+                log.Error("ShipTool>shipToolRotor null");
+                return;
             }
             this.shipToolRotor = shipToolRotor;
 
+            if (shipToolSeatRotor == null)
+            {
+                log.Error("ShipTool>shipToolSeatRotor null");
+                return;
+            }
+            this.shipToolSeatRotor = shipToolSeatRotor;
+
             if (shipToolGrinderHinge == null)
             {
-                throw new Exception("ShipTool>shipToolGrinderHinge null");
+                log.Error("ShipTool>shipToolGrinderHinge null");
+                return;
             }
             this.shipToolGrinderHinge = shipToolGrinderHinge;
 
             if (shipToolWelderHinge == null)
             {
-                throw new Exception("ShipTool>shipToolWelderHinge null");
+                log.Error("ShipTool>shipToolWelderHinge null");
+                return;
             }
             this.shipToolWelderHinge = shipToolWelderHinge;
 
             if (shipToolConnectorHinge == null)
             {
-                throw new Exception("ShipTool>shipToolConnectorHinge null");
+                log.Error("ShipTool>shipToolConnectorHinge null");
+                return;
             }
             this.shipToolConnectorHinge = shipToolConnectorHinge;
 
@@ -93,6 +106,7 @@ namespace IngameScript
         private void ShipToolRotate(string arg)
         {
             float rotorVelocity = shipToolRotor.GetValue<float>("Velocity");
+            float seatRotorVelocity = shipToolSeatRotor.GetValue<float>("Velocity");
             float grinderHingeAbsVelocity = Math.Abs(shipToolGrinderHinge.GetValue<float>("Velocity"));
             float welderHingeAbsVelocity = Math.Abs(shipToolWelderHinge.GetValue<float>("Velocity"));
             float connectorHingeAbsVelocity = Math.Abs(shipToolConnectorHinge.GetValue<float>("Velocity"));
@@ -100,21 +114,27 @@ namespace IngameScript
             {
                 case "grinder":
                     shipToolRotor.RotorLock = false;
+                    shipToolSeatRotor.RotorLock = false;
                     RotorUtils.RotateTo(shipToolRotor, 90, rotorVelocity);
+                    RotorUtils.RotateTo(shipToolSeatRotor, 270, seatRotorVelocity);
                     shipToolGrinderHinge.SetValue<float>("Velocity", -grinderHingeAbsVelocity);
                     shipToolWelderHinge.SetValue<float>("Velocity", welderHingeAbsVelocity);
                     shipToolConnectorHinge.SetValue<float>("Velocity", connectorHingeAbsVelocity);
                     break;
                 case "welder":
                     shipToolRotor.RotorLock = false;
+                    shipToolSeatRotor.RotorLock = false;
                     RotorUtils.RotateTo(shipToolRotor, 270, rotorVelocity);
+                    RotorUtils.RotateTo(shipToolSeatRotor, 90, seatRotorVelocity);
                     shipToolGrinderHinge.SetValue<float>("Velocity", grinderHingeAbsVelocity);
                     shipToolWelderHinge.SetValue<float>("Velocity", -welderHingeAbsVelocity);
                     shipToolConnectorHinge.SetValue<float>("Velocity", connectorHingeAbsVelocity);
                     break;
                 case "connector":
                     shipToolRotor.RotorLock = false;
+                    shipToolSeatRotor.RotorLock = false;
                     RotorUtils.RotateTo(shipToolRotor, 180, rotorVelocity);
+                    RotorUtils.RotateTo(shipToolSeatRotor, 180, seatRotorVelocity);
                     shipToolGrinderHinge.SetValue<float>("Velocity", grinderHingeAbsVelocity);
                     shipToolWelderHinge.SetValue<float>("Velocity", welderHingeAbsVelocity);
                     shipToolConnectorHinge.SetValue<float>("Velocity", -connectorHingeAbsVelocity);
@@ -125,25 +145,41 @@ namespace IngameScript
             }
         }
 
-        public void OnUpdate1() { }
+        public void OnUpdate1()
+        {
+            CheckShipToolRotorLock();
+        }
 
         public void OnUpdate10()
         {
             CheckShipToolRotorLock();
         }
-        public void OnUpdate100() { }
+
+        public void OnUpdate100()
+        {
+            CheckShipToolRotorLock();
+        }
 
         private void CheckShipToolRotorLock()
         {
-            if (shipToolRotor.RotorLock)
+            if (!shipToolRotor.RotorLock)
             {
-                return;
+                float angle = (float)(shipToolRotor.Angle * (180.0f / Math.PI));
+                string valueToGet = shipToolRotor.GetValue<float>("Velocity") > 0 ? "UpperLimit" : "LowerLimit";
+                if (angle == shipToolRotor.GetValue<float>(valueToGet))
+                {
+                    shipToolRotor.RotorLock = true;
+                }
             }
-            float angle = (float)(shipToolRotor.Angle * (180.0f / Math.PI));
-            string valueToGet = shipToolRotor.GetValue<float>("Velocity") > 0 ? "UpperLimit" : "LowerLimit";
-            if (angle == shipToolRotor.GetValue<float>(valueToGet))
+
+            if (!shipToolSeatRotor.RotorLock)
             {
-                shipToolRotor.RotorLock = true;
+                float angle = (float)(shipToolSeatRotor.Angle * (180.0f / Math.PI));
+                string valueToGet = shipToolSeatRotor.GetValue<float>("Velocity") > 0 ? "UpperLimit" : "LowerLimit";
+                if (angle == shipToolSeatRotor.GetValue<float>(valueToGet))
+                {
+                    shipToolSeatRotor.RotorLock = true;
+                }
             }
         }
     }
